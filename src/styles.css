@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+/* Empêcher les décalages de page - les images gardent leur largeur complète */
+html {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
+body {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
+/* Layout helpers */
+.container-app {
+  @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+.card {
+  @apply bg-white rounded-lg shadow-sm border border-gray-200;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-md bg-primary-600 px-4 py-2 text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center rounded-md bg-gray-100 px-4 py-2 text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50;
+}
+
+
