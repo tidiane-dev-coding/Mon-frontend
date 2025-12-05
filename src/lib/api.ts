@@ -7,7 +7,7 @@ declare global {
   }
 }
 
-export const baseURL = (import.meta.env.VITE_API_URL as string) || 'http://localhost:5000'
+export const baseURL = (import.meta.env.VITE_API_URL as string) || ' https://projet-dep-maths.onrender.com'
 
 export const api = axios.create({
   baseURL,
