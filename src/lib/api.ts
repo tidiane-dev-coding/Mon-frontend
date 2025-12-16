@@ -7,6 +7,7 @@ declare global {
   }
 }
 
+// API base URL — uses env var VITE_API_URL if set, otherwise defaults to production URL
 export const baseURL = (import.meta.env.VITE_API_URL as string) || 'https://projet-dep-maths.onrender.com'
 
 export const api = axios.create({
