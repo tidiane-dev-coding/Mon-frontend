@@ -77,15 +77,38 @@ export function RegisterPage() {
           {/* Champs nom, email, mot de passe et rôle */}
           <div>
             <label className="block text-sm font-medium text-gray-700">Nom complet</label>
-            <input className="mt-1 w-full rounded border-gray-300 focus:ring-primary-500 focus:border-primary-500" value={name} onChange={e => setName(e.target.value)} required />
+            <input
+              className="mt-1 w-full rounded border-gray-300 focus:ring-primary-500 focus:border-primary-500"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="Ex: Jean Dupont"
+              autoComplete="name"
+              required
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Email</label>
-            <input className="mt-1 w-full rounded border-gray-300 focus:ring-primary-500 focus:border-primary-500" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+            <input
+              className="mt-1 w-full rounded border-gray-300 focus:ring-primary-500 focus:border-primary-500"
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="email@exemple.com"
+              autoComplete="email"
+              required
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Mot de passe</label>
-            <input className="mt-1 w-full rounded border-gray-300 focus:ring-primary-500 focus:border-primary-500" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
+            <input
+              className="mt-1 w-full rounded border-gray-300 focus:ring-primary-500 focus:border-primary-500"
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              placeholder="Mot de passe (minimum 6 caractères)"
+              autoComplete="new-password"
+              required
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Rôle</label>

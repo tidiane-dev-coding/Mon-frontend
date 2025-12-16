@@ -64,11 +64,27 @@ export function LoginPage() {
           {/* Champs email et mot de passe */}
           <div>
             <label className="block text-sm font-medium text-gray-700">Email</label>
-            <input className="mt-1 w-full rounded border-gray-300 focus:ring-primary-500 focus:border-primary-500" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+            <input
+              className="mt-1 w-full rounded border-gray-300 focus:ring-primary-500 focus:border-primary-500"
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="email@exemple.com"
+              autoComplete="email"
+              required
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Mot de passe</label>
-            <input className="mt-1 w-full rounded border-gray-300 focus:ring-primary-500 focus:border-primary-500" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
+            <input
+              className="mt-1 w-full rounded border-gray-300 focus:ring-primary-500 focus:border-primary-500"
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              placeholder="Votre mot de passe"
+              autoComplete="current-password"
+              required
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Je suis</label>
