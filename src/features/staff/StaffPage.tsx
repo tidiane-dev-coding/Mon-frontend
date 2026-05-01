@@ -99,6 +99,17 @@ export function StaffPage() {
     setShowForm(true)
   }
 
+  function getAuthToken() {
+    return token || localStorage.getItem('dm_auth_token')
+  }
+
+  function handleInvalidToken() {
+    localStorage.removeItem('dm_auth_token')
+    localStorage.removeItem('dm_auth_user')
+    alert('Session expirée (token invalide). Reconnecte-toi.')
+    window.location.href = '/login'
+  }
+
   async function handleSave(e?: React.FormEvent) {
     e?.preventDefault()
     if (!canManage) return
@@ -109,19 +120,10 @@ export function StaffPage() {
       if (photoFile) {
         const formData = new FormData()
         formData.append('photo', photoFile)
-        const fetchHeaders: any = {}
-        if (token) fetchHeaders['Authorization'] = `Bearer ${token}`
-        const fetchRes = await fetch(`${baseURL}/api/staff/upload-photo`, {
-          method: 'POST',
-          headers: fetchHeaders,
-          body: formData,
+        const uploadRes = await api.post('/api/staff/upload-photo', formData, {
+          headers: getAuthToken() ? { Authorization: `Bearer ${getAuthToken()}` } : undefined,
         })
-        if (!fetchRes.ok) {
-          const bodyText = await fetchRes.text()
-          throw new Error(`Upload failed: ${fetchRes.status} ${bodyText}`)
-        }
-        const uploadJson = await fetchRes.json()
-        photoUrl = uploadJson.url
+        photoUrl = uploadRes.data?.url
       }
 
       const focus = form.focusText
@@ -144,11 +146,13 @@ export function StaffPage() {
 
       if (editingId) {
         const res = await api.put(`/api/staff/${editingId}`, payload, {
-          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+          headers: getAuthToken() ? { Authorization: `Bearer ${getAuthToken()}` } : undefined,
         })
         setStaffMembers((m) => m.map((x) => (x._id === editingId ? res.data : x)))
       } else {
-        const res = await api.post('/api/staff', payload, { headers: token ? { Authorization: `Bearer ${token}` } : undefined })
+        const res = await api.post('/api/staff', payload, {
+          headers: getAuthToken() ? { Authorization: `Bearer ${getAuthToken()}` } : undefined,
+        })
         setStaffMembers((m) => [...m, res.data])
       }
 
@@ -156,6 +160,10 @@ export function StaffPage() {
       setShowForm(false)
     } catch (err: any) {
       console.error('Failed to add staff member', err)
+      if (err?.response?.status === 401) {
+        handleInvalidToken()
+        return
+      }
       alert(err?.message || 'Erreur lors de l’enregistrement du membre.')
     } finally {
       setSaving(false)
@@ -166,10 +174,14 @@ export function StaffPage() {
     if (!id || !canManage) return
     if (!confirm('Supprimer ce membre ?')) return
     try {
-      await api.delete(`/api/staff/${id}`, { headers: token ? { Authorization: `Bearer ${token}` } : undefined })
+      await api.delete(`/api/staff/${id}`, { headers: getAuthToken() ? { Authorization: `Bearer ${getAuthToken()}` } : undefined })
       setStaffMembers((m) => m.filter((x) => x._id !== id))
     } catch (err) {
       console.error('Failed to delete staff member', err)
+      if ((err as any)?.response?.status === 401) {
+        handleInvalidToken()
+        return
+      }
       alert('Suppression échouée.')
     }
   }
@@ -179,29 +191,24 @@ export function StaffPage() {
     try {
       const formData = new FormData()
       formData.append('photo', file)
-      const fetchHeaders: any = {}
-      if (token) fetchHeaders['Authorization'] = `Bearer ${token}`
-      const fetchRes = await fetch(`${baseURL}/api/staff/upload-photo`, {
-        method: 'POST',
-        headers: fetchHeaders,
-        body: formData,
+      const uploadRes = await api.post('/api/staff/upload-photo', formData, {
+        headers: getAuthToken() ? { Authorization: `Bearer ${getAuthToken()}` } : undefined,
       })
-      if (!fetchRes.ok) {
-        const bodyText = await fetchRes.text()
-        throw new Error(`Upload failed: ${fetchRes.status} ${bodyText}`)
-      }
-      const uploadJson = await fetchRes.json()
-      const uploadedUrl = uploadJson.url
+      const uploadedUrl = uploadRes.data?.url
 
       const res = await api.put(
         `/api/staff/${member._id}`,
         { photo: uploadedUrl },
-        { headers: token ? { Authorization: `Bearer ${token}` } : undefined }
+        { headers: getAuthToken() ? { Authorization: `Bearer ${getAuthToken()}` } : undefined }
       )
       setStaffMembers((m) => m.map((x) => (x._id === member._id ? res.data : x)))
       alert('Photo mise à jour.')
     } catch (err: any) {
       console.error('Failed to quick-update photo', err)
+      if (err?.response?.status === 401) {
+        handleInvalidToken()
+        return
+      }
       alert(err?.message || 'Impossible de changer la photo.')
     }
   }
