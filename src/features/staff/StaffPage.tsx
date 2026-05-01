@@ -1,5 +1,5 @@
 // Page dédiée au personnel clé du département (direction et responsables)
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../../auth/AuthContext'
 import { api, baseURL } from '../../lib/api'
 
@@ -17,12 +17,43 @@ type StaffMember = {
 }
 
 function getImageUrl(url: string | undefined): string | null {
-  if (!url || url.trim() === '') return null
-  const trimmed = url.trim()
+  if (!url || typeof url !== 'string') return null
+  const trimmed = url.trim().replace(/^["']|["']$/g, '')
+  if (!trimmed) return null
+  if (trimmed.startsWith('//')) return `https:${trimmed}`
   if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return trimmed
   const serverBase = (baseURL || 'http://localhost:5000').replace(/\/+$/, '')
   if (trimmed.startsWith('/')) return `${serverBase}${trimmed}`
   return `${serverBase}/${trimmed}`
+}
+
+function StaffAvatar({ name, photo }: { name: string; photo?: string }) {
+  const [broken, setBroken] = useState(false)
+  const src = useMemo(() => getImageUrl(photo), [photo])
+  const initial = (name && name.trim()[0]) || '?'
+
+  useEffect(() => {
+    setBroken(false)
+  }, [src])
+
+  if (!src || broken) {
+    return (
+      <div className="w-full h-full flex items-center justify-center text-gray-400 text-xl font-semibold">
+        {initial}
+      </div>
+    )
+  }
+
+  return (
+    <img
+      src={src}
+      alt={`Portrait de ${name}`}
+      className="w-full h-full object-cover"
+      loading="lazy"
+      referrerPolicy="no-referrer"
+      onError={() => setBroken(true)}
+    />
+  )
 }
 
 export function StaffPage() {
@@ -47,26 +78,23 @@ export function StaffPage() {
     focusText: '',
   })
 
-  useEffect(() => {
-    let mounted = true
+  const loadStaff = useCallback(async () => {
     setLoading(true)
-    ;(async () => {
-      try {
-        const res = await api.get('/api/staff')
-        if (!mounted) return
-        setStaffMembers(res.data || [])
-      } catch (err) {
-        console.error('Failed to load staff', err)
-        if (!mounted) return
-        setStaffMembers([])
-      } finally {
-        if (mounted) setLoading(false)
-      }
-    })()
-    return () => {
-      mounted = false
+    try {
+      const res = await api.get('/api/staff')
+      const rows = Array.isArray(res.data) ? res.data : []
+      setStaffMembers(rows)
+    } catch (err) {
+      console.error('Failed to load staff', err)
+      setStaffMembers([])
+    } finally {
+      setLoading(false)
     }
   }, [])
+
+  useEffect(() => {
+    loadStaff()
+  }, [loadStaff])
 
   function resetForm() {
     setForm({ name: '', title: '', responsibility: '', email: '', phone: '', office: '', bio: '', focusText: '' })
@@ -158,14 +186,15 @@ export function StaffPage() {
         const res = await api.put(`/api/staff/${editingId}`, payload, {
           headers: getAuthToken() ? { Authorization: `Bearer ${getAuthToken()}` } : undefined,
         })
-        setStaffMembers((m) => m.map((x) => (x._id === editingId ? res.data : x)))
+        if (res.data?.warning) alert(res.data.warning)
       } else {
         const res = await api.post('/api/staff', payload, {
           headers: getAuthToken() ? { Authorization: `Bearer ${getAuthToken()}` } : undefined,
         })
-        setStaffMembers((m) => [...m, res.data])
+        if (res.data?.warning) alert(res.data.warning)
       }
 
+      await loadStaff()
       resetForm()
       setShowForm(false)
     } catch (err: any) {
@@ -185,7 +214,7 @@ export function StaffPage() {
     if (!confirm('Supprimer ce membre ?')) return
     try {
       await api.delete(`/api/staff/${id}`, { headers: getAuthToken() ? { Authorization: `Bearer ${getAuthToken()}` } : undefined })
-      setStaffMembers((m) => m.filter((x) => x._id !== id))
+      await loadStaff()
     } catch (err) {
       console.error('Failed to delete staff member', err)
       if ((err as any)?.response?.status === 401) {
@@ -206,8 +235,9 @@ export function StaffPage() {
         formData,
         { headers: getAuthToken() ? { Authorization: `Bearer ${getAuthToken()}` } : undefined }
       )
-      setStaffMembers((m) => m.map((x) => (x._id === member._id ? res.data : x)))
-      alert('Photo mise à jour.')
+      if (res.data?.warning) alert(res.data.warning)
+      else alert('Photo mise à jour.')
+      await loadStaff()
     } catch (err: any) {
       console.error('Failed to quick-update photo', err)
       if (err?.response?.status === 401) {
@@ -377,20 +407,10 @@ export function StaffPage() {
 
         <section aria-label="Membres du personnel" className="grid gap-6 md:grid-cols-2">
           {staffMembers.map((member) => (
-            <article key={member.email} className="card p-6 flex flex-col gap-4 hover:shadow-md transition-shadow border border-gray-100">
+            <article key={member._id || member.email} className="card p-6 flex flex-col gap-4 hover:shadow-md transition-shadow border border-gray-100">
               <div className="flex gap-4">
                 <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-100 border border-gray-200 shrink-0 shadow-inner">
-                  {member.photo ? (
-                    <img
-                      src={getImageUrl(member.photo) || ''}
-                      alt={`Portrait de ${member.name}`}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400 text-xl font-semibold">
-                      {member.name[0]}
-                    </div>
-                  )}
+                  <StaffAvatar name={member.name} photo={member.photo} />
                 </div>
                 <div>
                   <p className="text-sm text-primary-600 font-semibold">{member.title}</p>
@@ -416,7 +436,7 @@ export function StaffPage() {
               <div>
                 <p className="text-sm text-gray-500 font-medium mb-2">Focus prioritaires</p>
                 <ul className="flex flex-wrap gap-2">
-                  {member.focus.map((item) => (
+                  {(member.focus || []).map((item) => (
                     <li key={item} className="px-3 py-1 rounded-full bg-primary-50 text-primary-700 text-xs font-semibold">
                       {item}
                     </li>
