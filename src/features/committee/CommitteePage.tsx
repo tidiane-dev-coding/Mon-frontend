@@ -11,7 +11,22 @@ function getImageUrl(url: string | undefined): string {
 
   const trimmed = url.trim()
   // Si c'est déjà une URL complète, la retourner telle quelle
-  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return trimmed
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    // Si l'URL pointe vers localhost (ou 127.0.0.1), remplace l'hôte par le baseURL public
+    if (trimmed.includes('localhost') || trimmed.includes('127.0.0.1')) {
+      const serverBase = (baseURL || 'http://localhost:5000').replace(/\/+$/, '')
+      // extraire le chemin après l'hôte
+      try {
+        const urlObj = new URL(trimmed)
+        return `${serverBase}${urlObj.pathname}${urlObj.search || ''}`
+      } catch (_) {
+        // si parsing échoue, tenter une simple reconstruction
+        const parts = trimmed.split('/').slice(3)
+        return `${serverBase}/${parts.join('/')}`
+      }
+    }
+    return trimmed
+  }
 
   // Utiliser le baseURL importé (normalisé sans slash terminal)
   const serverBase = (baseURL || 'http://localhost:5000').replace(/\/+$/, '')
