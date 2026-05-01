@@ -103,6 +103,16 @@ export function StaffPage() {
     return token || localStorage.getItem('dm_auth_token')
   }
 
+  function getReadableError(err: any) {
+    const status = err?.response?.status
+    const data = err?.response?.data
+    const details = data?.details ? ` | ${JSON.stringify(data.details)}` : ''
+    if (typeof data === 'string') return `Erreur ${status || ''}: ${data}`
+    if (data?.message) return `Erreur ${status || ''}: ${data.message}${details}`
+    if (err?.message) return err.message
+    return 'Erreur inconnue'
+  }
+
   function handleInvalidToken() {
     localStorage.removeItem('dm_auth_token')
     localStorage.removeItem('dm_auth_user')
@@ -116,14 +126,16 @@ export function StaffPage() {
 
     setSaving(true)
     try {
-      let photoUrl: string | undefined = undefined
-      if (photoFile) {
-        const formData = new FormData()
-        formData.append('photo', photoFile)
-        const uploadRes = await api.post('/api/staff/upload-photo', formData, {
-          headers: getAuthToken() ? { Authorization: `Bearer ${getAuthToken()}` } : undefined,
-        })
-        photoUrl = uploadRes.data?.url
+      const cleanName = form.name.trim()
+      const cleanTitle = form.title.trim()
+      const cleanResponsibility = form.responsibility.trim()
+      const cleanEmail = form.email.trim()
+      const cleanPhone = form.phone.trim()
+      const cleanOffice = form.office.trim()
+      const cleanBio = form.bio.trim()
+
+      if (!cleanName || !cleanTitle || !cleanResponsibility || !cleanEmail || !cleanPhone || !cleanOffice || !cleanBio) {
+        throw new Error('Merci de remplir tous les champs obligatoires avant d’enregistrer.')
       }
 
       const focus = form.focusText
@@ -131,18 +143,16 @@ export function StaffPage() {
         .map((s) => s.trim())
         .filter(Boolean)
 
-      const payload: any = {
-        name: form.name,
-        title: form.title,
-        responsibility: form.responsibility,
-        email: form.email,
-        phone: form.phone,
-        office: form.office,
-        bio: form.bio,
-        focus,
-      }
-      // Only override photo if a new one was uploaded
-      if (photoUrl) payload.photo = photoUrl
+      const payload = new FormData()
+      payload.append('name', cleanName)
+      payload.append('title', cleanTitle)
+      payload.append('responsibility', cleanResponsibility)
+      payload.append('email', cleanEmail)
+      payload.append('phone', cleanPhone)
+      payload.append('office', cleanOffice)
+      payload.append('bio', cleanBio)
+      payload.append('focus', JSON.stringify(focus))
+      if (photoFile) payload.append('photo', photoFile)
 
       if (editingId) {
         const res = await api.put(`/api/staff/${editingId}`, payload, {
@@ -164,7 +174,7 @@ export function StaffPage() {
         handleInvalidToken()
         return
       }
-      alert(err?.message || 'Erreur lors de l’enregistrement du membre.')
+      alert(getReadableError(err))
     } finally {
       setSaving(false)
     }
@@ -182,7 +192,7 @@ export function StaffPage() {
         handleInvalidToken()
         return
       }
-      alert('Suppression échouée.')
+      alert(getReadableError(err))
     }
   }
 
@@ -191,14 +201,9 @@ export function StaffPage() {
     try {
       const formData = new FormData()
       formData.append('photo', file)
-      const uploadRes = await api.post('/api/staff/upload-photo', formData, {
-        headers: getAuthToken() ? { Authorization: `Bearer ${getAuthToken()}` } : undefined,
-      })
-      const uploadedUrl = uploadRes.data?.url
-
       const res = await api.put(
         `/api/staff/${member._id}`,
-        { photo: uploadedUrl },
+        formData,
         { headers: getAuthToken() ? { Authorization: `Bearer ${getAuthToken()}` } : undefined }
       )
       setStaffMembers((m) => m.map((x) => (x._id === member._id ? res.data : x)))
@@ -209,7 +214,7 @@ export function StaffPage() {
         handleInvalidToken()
         return
       }
-      alert(err?.message || 'Impossible de changer la photo.')
+      alert(getReadableError(err))
     }
   }
 
