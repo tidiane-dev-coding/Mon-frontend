@@ -1,5 +1,5 @@
 // Page d'inscription: création de compte et choix du rôle
-import { FormEvent, useState } from 'react'
+import React, { FormEvent, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth, type User } from '../../auth/AuthContext'
 import { api } from '../../lib/api'
@@ -123,6 +123,7 @@ export function RegisterPage() {
           <p className={`mt-4 text-sm ${emailSent ? 'text-green-600' : 'text-red-600'}`}>{emailInfo}</p>
         )}
         <p className="mt-4 text-sm text-gray-600">Déjà inscrit ? <Link to="/login" className="text-primary-600 hover:underline">Connectez-vous</Link></p>
+        <p className="mt-1 text-sm text-gray-600">Mot de passe oublié ? <Link to="/forgot-password" className="text-primary-600 hover:underline">Réinitialiser</Link></p>
       </div>
       </div>
     </div>

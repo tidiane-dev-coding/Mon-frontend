@@ -1,5 +1,5 @@
 // Page de connexion: formulaire d'authentification et héros illustré
-import { FormEvent, useState } from 'react'
+import React, { FormEvent, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth, type User } from '../../auth/AuthContext'
 import { api } from '../../lib/api'
@@ -85,6 +85,9 @@ export function LoginPage() {
               autoComplete="current-password"
               required
             />
+            <div className="mt-1 text-right">
+              <Link to="/forgot-password" className="text-sm text-primary-600 hover:underline">Mot de passe oublie ?</Link>
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Je suis</label>

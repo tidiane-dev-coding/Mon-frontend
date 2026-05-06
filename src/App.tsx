@@ -1,10 +1,13 @@
 // Définition du routage principal et des pages protégées par rôle
+import React from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './auth/AuthContext'
 import { ProtectedRoute } from './auth/ProtectedRoute'
 import { Layout } from './components/layout/Layout'
 import { LoginPage } from './features/auth/LoginPage'
 import { RegisterPage } from './features/auth/RegisterPage'
+import { ForgotPasswordPage } from './features/auth/ForgotPasswordPage'
+import { ResetPasswordPage } from './features/auth/ResetPasswordPage'
 import { HomePage } from './features/home/HomePage'
 import { UsersPage } from './features/users/UsersPage'
 import { UserProfilePage } from './features/users/UserProfilePage'
@@ -24,6 +27,8 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route element={<Layout /> }>
           <Route index element={<HomePage />} />
           <Route path="/welcome" element={<WelcomePage />} />
