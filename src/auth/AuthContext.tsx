@@ -10,6 +10,7 @@ type User = {
   name: string
   email: string
   role: Role
+  isSuperAdmin?: boolean
   avatarUrl?: string
 }
 

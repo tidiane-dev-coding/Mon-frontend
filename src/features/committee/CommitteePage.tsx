@@ -47,6 +47,8 @@ type Member = {
 
 export default function CommitteePage() {
   const { user, token } = useAuth()
+  const delegatedEmails = ['mariama1.diallo@univ-labe.edu.gn', 'alpharahma2018@gmail.com']
+  const canManageCommittee = user?.role === 'Admin' || delegatedEmails.includes(String(user?.email || '').toLowerCase())
   const [level, setLevel] = useState<string>('L1')
   const [members, setMembers] = useState<Member[]>([])
   const [showForm, setShowForm] = useState(false)
@@ -197,7 +199,7 @@ export default function CommitteePage() {
           </div>
         </div>
 
-        {user?.role === 'Admin' && (
+        {canManageCommittee && (
           <div className="mb-4">
             <button className="btn-primary" onClick={() => {
               setShowForm(s => !s)
@@ -214,8 +216,8 @@ export default function CommitteePage() {
 
         {showForm && (
           <form className="mb-4 bg-gray-50 p-4 rounded border space-y-3" onSubmit={handleAdd}>
-            <input placeholder="Nom" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className="w-full rounded border-gray-300" />
-            <input placeholder="Rôle" value={form.role} onChange={e => setForm(f => ({ ...f, role: e.target.value }))} className="w-full rounded border-gray-300" />
+            <input placeholder="Ex: Mariama Diallo" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className="w-full rounded border-gray-300" />
+            <input placeholder="Ex: Présidente du comité" value={form.role} onChange={e => setForm(f => ({ ...f, role: e.target.value }))} className="w-full rounded border-gray-300" />
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Photo</label>
               <input
@@ -249,8 +251,8 @@ export default function CommitteePage() {
                 </div>
               )}
             </div>
-            <input placeholder="Email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} className="w-full rounded border-gray-300" />
-            <input placeholder="Téléphone" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} className="w-full rounded border-gray-300" />
+            <input placeholder="Ex: nom.prenom@univ-labe.edu.gn" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} className="w-full rounded border-gray-300" />
+            <input placeholder="Ex: +224 629 00 58 29" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} className="w-full rounded border-gray-300" />
             <div className="flex gap-2">
               <button type="submit" className="btn-primary" disabled={uploading}>
                 {uploading ? 'Téléchargement...' : 'Ajouter'}
@@ -280,7 +282,7 @@ export default function CommitteePage() {
                 <div className="text-sm text-gray-600 mb-1">{m.role}</div>
                 <div className="text-xs text-gray-500">{m.email}</div>
                 <div className="text-xs text-gray-500">{m.phone}</div>
-                {user?.role === 'Admin' && (
+                {canManageCommittee && (
                   <div className="mt-2 flex gap-2">
                     <button className="text-sm text-primary-600" onClick={() => handleEdit(m._id)}>Modifier</button>
                     <button className="text-sm text-red-600" onClick={() => handleDelete(m._id)}>Supprimer</button>

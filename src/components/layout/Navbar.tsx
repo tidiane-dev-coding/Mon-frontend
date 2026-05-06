@@ -1,9 +1,11 @@
 // Barre de navigation: logo, menu horizontal, liens d'authentification et profil
+import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../../auth/AuthContext'
 
 export function Navbar() {
   const { user, logout } = useAuth()
+  const roleLabel = user?.isSuperAdmin ? 'Super Admin' : user?.role
   
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
@@ -17,7 +19,7 @@ export function Navbar() {
           <div className="flex items-center gap-3">
             {user ? (
               <>
-                <span className="text-sm text-gray-600">{user.name} · {user.role}</span>
+                <span className="text-sm text-gray-600">{user.name} · {roleLabel}</span>
                 <button className="btn-secondary" onClick={logout}>Se déconnecter</button>
               </>
             ) : (

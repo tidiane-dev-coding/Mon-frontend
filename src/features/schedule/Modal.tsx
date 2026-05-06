@@ -36,19 +36,19 @@ export default function Modal({ onClose, onSave, day, slot, cours }: ModalProps)
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium">Matière</label>
-            <input type="text" className="input input-bordered w-full" value={matiere} onChange={e => setMatiere(e.target.value)} required />
+            <input type="text" className="input input-bordered w-full" value={matiere} onChange={e => setMatiere(e.target.value)} placeholder="Ex: Analyse 2" required />
           </div>
           <div>
             <label className="block text-sm font-medium">Professeur</label>
-            <input type="text" className="input input-bordered w-full" value={prof} onChange={e => setProf(e.target.value)} required />
+            <input type="text" className="input input-bordered w-full" value={prof} onChange={e => setProf(e.target.value)} placeholder="Ex: Dr Camara" required />
           </div>
           <div>
             <label className="block text-sm font-medium">Salle</label>
-            <input type="text" className="input input-bordered w-full" value={salle} onChange={e => setSalle(e.target.value)} />
+            <input type="text" className="input input-bordered w-full" value={salle} onChange={e => setSalle(e.target.value)} placeholder="Ex: Amphi A1" />
           </div>
           <div>
             <label className="block text-sm font-medium">Numéro du professeur</label>
-            <input type="text" className="input input-bordered w-full" value={numero} onChange={e => setNumero(e.target.value)} />
+            <input type="text" className="input input-bordered w-full" value={numero} onChange={e => setNumero(e.target.value)} placeholder="Ex: +224 620 00 00 00" />
           </div>
           <div className="flex justify-end gap-2">
             <button type="button" className="btn" onClick={onClose}>Annuler</button>

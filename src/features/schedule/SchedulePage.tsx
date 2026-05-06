@@ -1,4 +1,5 @@
 // Page emploi du temps: visualisation par jour et créneaux, édition rapide
+import React from 'react'
 import { DAYS_FR } from '../../config/constants'
 
 import { useEffect, useState } from 'react';
@@ -19,10 +20,9 @@ interface SlotDoc extends Cours {
   _id?: string;
 }
 
-// Créneaux de 2h : 9h-11h, 11h-13h, 14h-17h
+// Créneaux journaliers : 9h-13h et 14h-17h
 const SLOTS_2H = [
-  { label: '09:00 - 11:00', value: '09-11' },
-  { label: '11:00 - 13:00', value: '11-13' },
+  { label: '09:00 - 13:00', value: '09-13' },
   { label: '14:00 - 17:00', value: '14-17' },
 ];
 
@@ -34,8 +34,10 @@ type ScheduleType = {
 
 export function SchedulePage() {
   const { user } = useAuth();
+  const delegatedEmails = ['mariama1.diallo@univ-labe.edu.gn', 'alpharahma2018@gmail.com'];
+  const canManageSchedule = user?.role === 'Admin' || delegatedEmails.includes(String(user?.email || '').toLowerCase());
   // selected classe (e.g. L1, L2, L3, Master). Default to user's classe if available
-  const [classe, setClasse] = useState<string>(user?.classe || 'L1');
+  const [classe, setClasse] = useState<string>('L1');
   // État de la modale et du créneau sélectionné
   const [showModal, setShowModal] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<{ day: string | null; slot: string | null }>({ day: null, slot: null });
@@ -120,9 +122,9 @@ export function SchedulePage() {
                     return (
                       <div
                         key={slot.value}
-                        className={`rounded border px-2 py-1 flex flex-col gap-1 cursor-pointer ${user?.role === 'Admin' ? 'hover:bg-primary-50' : ''}`}
-                        onClick={user?.role === 'Admin' ? () => handleSlotClick(day, slot.value) : undefined}
-                        style={{ cursor: user?.role === 'Admin' ? 'pointer' : 'default' }}
+                        className={`rounded border px-2 py-1 flex flex-col gap-1 cursor-pointer ${canManageSchedule ? 'hover:bg-primary-50' : ''}`}
+                        onClick={canManageSchedule ? () => handleSlotClick(day, slot.value) : undefined}
+                        style={{ cursor: canManageSchedule ? 'pointer' : 'default' }}
                       >
                         <span className="font-medium text-gray-700">{slot.label}</span>
                         {cours ? (
@@ -133,7 +135,7 @@ export function SchedulePage() {
                             {cours.numero && (
                               <div><span className="font-semibold">Numéro :</span> {cours.numero}</div>
                             )}
-                            {user?.role === 'Admin' && (
+                            {canManageSchedule && (
                               <div className="flex gap-2 mt-2">
                                 <button className="text-sm text-primary-600" onClick={() => { setSelectedSlot({ day, slot: slot.value }); setShowModal(true); }}>Modifier</button>
                                 {cours._id && <button className="text-sm text-red-600" onClick={async () => {
@@ -161,14 +163,14 @@ export function SchedulePage() {
           </div>
         </div>
         {/* Bouton d'ajout/modification réservé à l'admin */}
-        {user?.role === 'Admin' && (
+        {canManageSchedule && (
           <div className="mt-3">
             <button className="btn-primary" onClick={() => setShowModal(true)}>Ajouter/Modifier (modale)</button>
           </div>
         )}
       </section>
       {/* Modale d'édition rapide réservée à l'admin */}
-      {user?.role === 'Admin' && showModal && selectedSlot.day && selectedSlot.slot && (
+      {canManageSchedule && showModal && selectedSlot.day && selectedSlot.slot && (
         <Modal
           onClose={() => setShowModal(false)}
           onSave={(data) => handleSave({ ...data, slot: selectedSlot.slot! })}

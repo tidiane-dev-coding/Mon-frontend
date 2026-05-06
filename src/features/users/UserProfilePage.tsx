@@ -1,5 +1,11 @@
 // Page de profil utilisateur: affichage des informations et actions liées au compte
+import React from 'react'
+import { useAuth } from '../../auth/AuthContext'
+
 export function UserProfilePage() {
+  const { user } = useAuth()
+  const roleLabel = user?.isSuperAdmin ? 'Super Admin' : user?.role
+
   return (
     <div className="space-y-6">
       <section
@@ -20,6 +26,13 @@ export function UserProfilePage() {
       <div className="card p-6">
         <h1 className="text-xl font-semibold text-primary-700">Profil utilisateur</h1>
         <p className="text-gray-600 mt-2">Photo, informations personnelles, et actions.</p>
+        {user && (
+          <div className="mt-4 space-y-1 text-sm">
+            <p><span className="font-semibold">Nom :</span> {user.name}</p>
+            <p><span className="font-semibold">Email :</span> {user.email}</p>
+            <p><span className="font-semibold">Rôle :</span> {roleLabel}</p>
+          </div>
+        )}
       </div>
     </div>
   )

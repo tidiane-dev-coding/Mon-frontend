@@ -321,31 +321,31 @@ export function StaffPage() {
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
                   <label className="text-sm text-gray-600">Nom</label>
-                  <input className="input mt-1 w-full" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} required />
+                  <input className="input mt-1 w-full" placeholder="Ex: Dr Fatoumata Camara" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} required />
                 </div>
                 <div>
                   <label className="text-sm text-gray-600">Titre</label>
-                  <input className="input mt-1 w-full" value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} required />
+                  <input className="input mt-1 w-full" placeholder="Ex: Cheffe de département" value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} required />
                 </div>
                 <div>
                   <label className="text-sm text-gray-600">Responsabilité</label>
-                  <input className="input mt-1 w-full" value={form.responsibility} onChange={(e) => setForm((f) => ({ ...f, responsibility: e.target.value }))} required />
+                  <input className="input mt-1 w-full" placeholder="Ex: Pilotage académique" value={form.responsibility} onChange={(e) => setForm((f) => ({ ...f, responsibility: e.target.value }))} required />
                 </div>
                 <div>
                   <label className="text-sm text-gray-600">Bureau</label>
-                  <input className="input mt-1 w-full" value={form.office} onChange={(e) => setForm((f) => ({ ...f, office: e.target.value }))} required />
+                  <input className="input mt-1 w-full" placeholder="Ex: Bâtiment A, Bureau 12" value={form.office} onChange={(e) => setForm((f) => ({ ...f, office: e.target.value }))} required />
                 </div>
                 <div>
                   <label className="text-sm text-gray-600">Email</label>
-                  <input className="input mt-1 w-full" type="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} required />
+                  <input className="input mt-1 w-full" type="email" placeholder="Ex: nom.prenom@univ-labe.edu.gn" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} required />
                 </div>
                 <div>
                   <label className="text-sm text-gray-600">Téléphone</label>
-                  <input className="input mt-1 w-full" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} required />
+                  <input className="input mt-1 w-full" placeholder="Ex: +224 620 00 00 00" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} required />
                 </div>
                 <div className="md:col-span-2">
                   <label className="text-sm text-gray-600">Bio</label>
-                  <textarea className="input mt-1 w-full min-h-[90px]" value={form.bio} onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))} required />
+                  <textarea className="input mt-1 w-full min-h-[90px]" placeholder="Ex: Enseignante-chercheuse, spécialisée en algèbre et encadrement des promotions L1-L3." value={form.bio} onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))} required />
                 </div>
                 <div className="md:col-span-2">
                   <label className="text-sm text-gray-600">Focus (séparés par virgule)</label>
@@ -483,8 +483,8 @@ export function StaffPage() {
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
-            <a href="mailto:secretariat.math@univ-math.edu" className="btn-primary">secretariat.math@univ-math.edu</a>
-            <a href="tel:+221770000005" className="btn-secondary">+224 628 31 98 00</a>
+            <a href="mailto:secretariat.math@univ-math.edu" className="btn-primary">mariama1.diallo@univ-labe.edu.gn</a>
+            <a href="tel:+221770000005" className="btn-secondary">+224 629 00 58 29</a>
           </div>
         </section>
       </div>
