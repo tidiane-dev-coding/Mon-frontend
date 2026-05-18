@@ -22,7 +22,7 @@ function getImageUrl(url: string | undefined): string | null {
   if (!trimmed) return null
   if (trimmed.startsWith('//')) return `https:${trimmed}`
   if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return trimmed
-  const serverBase = (baseURL || 'http://localhost:5000').replace(/\/+$/, '')
+  const serverBase = (baseURL || 'https://projet-dep-maths.onrender.com').replace(/\/+$/, '')
   if (trimmed.startsWith('/')) return `${serverBase}${trimmed}`
   return `${serverBase}/${trimmed}`
 }

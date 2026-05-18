@@ -23,11 +23,7 @@ export function MessagingPage() {
 
   useEffect(() => {
     const explicitSocket = String((import.meta as { env?: { VITE_SOCKET_URL?: string } }).env?.VITE_SOCKET_URL || '').trim()
-    const socketUrl =
-      explicitSocket ||
-      (import.meta.env.DEV
-        ? 'http://127.0.0.1:5000'
-        : (baseURL || 'https://projet-dep-maths.onrender.com').replace(/\/+$/, ''))
+    const socketUrl = (explicitSocket || baseURL).replace(/\/+$/, '')
 
     const socket = io(socketUrl, { autoConnect: false, transports: ['websocket', 'polling'] })
 

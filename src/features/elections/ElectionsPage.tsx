@@ -67,7 +67,7 @@ function getImageUrl(url: string | undefined): string {
   }
   
   // Si c'est une URL relative (commence par /), construire l'URL complète
-  const baseURL = api.defaults.baseURL || 'http://localhost:5000';
+  const baseURL = api.defaults.baseURL || 'https://projet-dep-maths.onrender.com';
   
   // Nettoyer l'URL pour éviter les doubles slashes
   let cleanUrl = url.trim();

@@ -39,7 +39,7 @@ frontend/
 
 ## Prérequis
 - Node.js 18+
-- Un backend disponible (URL d’API + Socket.IO). Par défaut, la page de messagerie pointe vers `http://localhost:5000`.
+- L’API est utilisée sur **Render** par défaut (`https://projet-dep-maths.onrender.com`), configurable via `VITE_API_URL` et `VITE_SOCKET_URL` dans `.env`.
 
 ## Installation et démarrage
 ```bash
@@ -47,17 +47,18 @@ cd frontend
 npm install
 npm run dev
 ```
-Ouvrez `http://localhost:5173`.
+Le serveur de dev Vite s’ouvre en général sur le port **5173** (voir la console).
 
 ## Configuration
+- **API & WebSocket** : `frontend/.env` — `VITE_API_URL` et `VITE_SOCKET_URL` (même hôte que l’API en production).
 - Couleurs principales définies dans `tailwind.config.js` (bleu/blanc/gris).
 - Styles globaux dans `src/styles.css`.
-- Layout commun: `Navbar` + `Sidebar` dans `src/components/layout`.
+- Layout commun : `Navbar` + zone de contenu dans `src/components/layout`.
 
 ## Authentification & rôles
 - Contexte d’authentification: `src/auth/AuthContext.tsx`
 - Garde de routes (rôles): `src/auth/ProtectedRoute.tsx`
-- Les pages de connexion/inscription sont des placeholders: il faut relier les appels API (login/register) au backend JWT.
+- Les pages de connexion et d’inscription appellent le backend JWT (`/api/auth/login`, `/api/auth/register`).
 - Rôles pris en charge: `Admin`, `Professor`, `Student` avec affichage conditionnel dans la `Sidebar`.
 
 ## Pages & fonctionnalités (placeholders)

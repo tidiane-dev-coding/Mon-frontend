@@ -14,7 +14,7 @@ function getImageUrl(url: string | undefined): string {
   if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
     // Si l'URL pointe vers localhost (ou 127.0.0.1), remplace l'hôte par le baseURL public
     if (trimmed.includes('localhost') || trimmed.includes('127.0.0.1')) {
-      const serverBase = (baseURL || 'http://localhost:5000').replace(/\/+$/, '')
+      const serverBase = (baseURL || 'https://projet-dep-maths.onrender.com').replace(/\/+$/, '')
       // extraire le chemin après l'hôte
       try {
         const urlObj = new URL(trimmed)
@@ -29,7 +29,7 @@ function getImageUrl(url: string | undefined): string {
   }
 
   // Utiliser le baseURL importé (normalisé sans slash terminal)
-  const serverBase = (baseURL || 'http://localhost:5000').replace(/\/+$/, '')
+  const serverBase = (baseURL || 'https://projet-dep-maths.onrender.com').replace(/\/+$/, '')
   // Construire correctement l'URL (éviter les doubles slashes)
   if (trimmed.startsWith('/')) return `${serverBase}${trimmed}`
   return `${serverBase}/${trimmed}`
