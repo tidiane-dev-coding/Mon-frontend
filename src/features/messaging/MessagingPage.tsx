@@ -23,7 +23,10 @@ export function MessagingPage() {
 
   useEffect(() => {
     const explicitSocket = String((import.meta as { env?: { VITE_SOCKET_URL?: string } }).env?.VITE_SOCKET_URL || '').trim()
-    const socketUrl = (explicitSocket || baseURL).replace(/\/+$/, '')
+    let socketUrl = (explicitSocket || baseURL).replace(/\/+$/, '')
+    if (socketUrl.includes('localhost') || socketUrl.includes('127.0.0.1')) {
+      socketUrl = baseURL.replace(/\/+$/, '')
+    }
 
     const socket = io(socketUrl, { autoConnect: false, transports: ['websocket', 'polling'] })
 

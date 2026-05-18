@@ -27,7 +27,9 @@ export function LoginPage() {
       }
     } catch (err: any) {
       if (!err?.response) {
-        setError('Serveur injoignable. Vérifiez que l’API tourne et que VITE_API_URL est correct au déploiement.')
+        setError(
+          'API injoignable. Sur Render gratuit, attendez 30–60 s au premier essai. Vérifiez la console (F12) : l’URL doit être projet-dep-maths.onrender.com, pas localhost.'
+        )
       } else {
         setError('Identifiants invalides')
       }
