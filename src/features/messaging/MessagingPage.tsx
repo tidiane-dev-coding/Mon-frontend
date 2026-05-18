@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { io, Socket } from 'socket.io-client'
 import { useAuth } from '../../auth/AuthContext'
-import { api } from '../../lib/api'
+import { api, baseURL } from '../../lib/api'
 
 
 
@@ -18,7 +18,10 @@ export function MessagingPage() {
   const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
-  const socketUrl = ((import.meta as any).env?.VITE_SOCKET_URL as string) || 'http://localhost:5000';
+    const explicitSocket = String((import.meta as any).env?.VITE_SOCKET_URL || '').trim()
+    const socketUrl =
+      explicitSocket ||
+      (import.meta.env.DEV ? 'http://127.0.0.1:5000' : (baseURL || 'https://projet-dep-maths.onrender.com').replace(/\/+$/, ''))
     const socket = io(socketUrl, { autoConnect: false });
 
     setStatus('connecting');

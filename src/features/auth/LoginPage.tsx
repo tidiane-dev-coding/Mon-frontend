@@ -26,7 +26,11 @@ export function LoginPage() {
         alert(`Vous vous êtes connecté·e en tant que ${user.role} — vous aviez sélectionné ${role}.`)
       }
     } catch (err: any) {
-      setError('Identifiants invalides')
+      if (!err?.response) {
+        setError('Serveur injoignable. Vérifiez que l’API tourne et que VITE_API_URL est correct au déploiement.')
+      } else {
+        setError('Identifiants invalides')
+      }
     } finally {
       setLoading(false)
     }

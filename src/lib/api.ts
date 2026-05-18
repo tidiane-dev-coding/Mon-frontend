@@ -7,9 +7,19 @@ declare global {
   }
 }
 
-export const baseURL = (
-  (import.meta.env.VITE_API_URL as string) || 'https://projet-dep-maths.onrender.com'
-).trim().replace(/\/+$/, '')
+const DEFAULT_PROD_API = 'https://projet-dep-maths.onrender.com'
+
+/** Base URL de l’API. En dev : chaîne vide → proxy Vite vers le backend local. En prod : VITE_API_URL au build, sinon Render. */
+function resolveApiBaseURL(): string {
+  const explicit = String((import.meta.env.VITE_API_URL as string) || '')
+    .trim()
+    .replace(/\/+$/, '')
+  if (explicit) return explicit
+  if (import.meta.env.DEV) return ''
+  return DEFAULT_PROD_API
+}
+
+export const baseURL = resolveApiBaseURL()
 
 export const api = axios.create({
   baseURL,
