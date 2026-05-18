@@ -20,6 +20,7 @@ import { MessagingPage } from './features/messaging/MessagingPage'
 import { AnnouncementsPage } from './features/announcements/AnnouncementsPage'
 import { StaffPage } from './features/staff/StaffPage'
 import { WelcomePage } from './features/welcome/WelcomePage'
+import { AbsencesPage } from './features/absences/AbsencesPage'
 
 export default function App() {
   return (
@@ -43,6 +44,7 @@ export default function App() {
             <Route path="/resources" element={<ResourcesPage />} />
             <Route path="/messaging" element={<MessagingPage />} />
             <Route path="/announcements" element={<AnnouncementsPage />} />
+            <Route path="/absences" element={<AbsencesPage />} />
           </Route>
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />

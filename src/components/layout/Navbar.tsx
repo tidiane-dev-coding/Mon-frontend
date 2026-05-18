@@ -94,6 +94,18 @@ export function Navbar() {
             Cours & ressources
           </NavLink>
           <NavLink
+            to="/absences"
+            className={({ isActive }) => 
+              `px-4 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-colors ${
+                isActive 
+                  ? 'bg-primary-50 text-primary-700' 
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`
+            }
+          >
+            Absences
+          </NavLink>
+          <NavLink
             to="/schedule"
             className={({ isActive }) => 
               `px-4 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-colors ${

@@ -7,9 +7,9 @@ declare global {
   }
 }
 
-// API base URL — hardcoded for production to ensure Render uses correct backend
-// DO NOT use localhost here — it breaks mobile/external access
-export const baseURL = 'https://projet-dep-maths.onrender.com'
+export const baseURL = (
+  (import.meta.env.VITE_API_URL as string) || 'https://projet-dep-maths.onrender.com'
+).trim().replace(/\/+$/, '')
 
 export const api = axios.create({
   baseURL,
