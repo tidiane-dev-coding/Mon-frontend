@@ -2,18 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../../auth/AuthContext';
 import { api, baseURL } from '../../lib/api';
-
-const DELEGATE_EMAILS = [
-  'mariama1.diallo@univ-labe.edu.gn',
-  'alpharahma2018@gmail.com',
-  'dep.math@univ-labe.edu.gn',
-];
-
-function canManageAnnouncements(user: { role?: string; email?: string; isSuperAdmin?: boolean } | null): boolean {
-  if (!user) return false;
-  if (user.isSuperAdmin || user.role === 'Admin') return true;
-  return DELEGATE_EMAILS.includes(String(user.email || '').trim().toLowerCase());
-}
+import { canManageAnnouncements, isDelegateEmail } from '../../config/delegates';
 
 type Announcement = {
   _id?: string;
@@ -261,7 +250,7 @@ function FileDropZone({
 export function AnnouncementsPage() {
   const { user } = useAuth();
   const canManage = canManageAnnouncements(user);
-  const isDelegate = !!user && DELEGATE_EMAILS.includes(String(user.email || '').trim().toLowerCase());
+  const isDelegate = !!user && isDelegateEmail(user.email);
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -339,8 +328,14 @@ export function AnnouncementsPage() {
       resetForm();
       setShowForm(false);
     } catch (err: unknown) {
-      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
-      showToast('error', msg || 'Publication impossible. Accès réservé aux administrateurs et délégués.');
+      const res = (err as { response?: { status?: number; data?: { message?: string } } })?.response;
+      const status = res?.status;
+      let msg = res?.data?.message;
+      if (status === 403) {
+        msg =
+          'Accès refusé (403). Utilisez un compte admin ou délégué, reconnectez-vous, et vérifiez que le backend local tourne (VITE_USE_LOCAL_API=true) ou que Render est à jour.';
+      }
+      showToast('error', msg || 'Publication impossible.');
     } finally {
       setSubmitting(false);
     }
